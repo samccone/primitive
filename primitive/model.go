@@ -90,8 +90,9 @@ func (model *Model) SVG() string {
 	fillA := model.Colors[0].A
 	var lines []string
 	lines = append(lines, fmt.Sprintf("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" viewBox=\"0 0 %d %d\">", model.Vw, model.Vh))
+	lines = append(lines, "<clipPath id=\"clip\"><rect  width=\"100%\" height=\"100%\" /></clipPath>")
 	lines = append(lines, fmt.Sprintf("<rect width=\"100%%\" height=\"100%%\" fill=\"#%02x%02x%02x\" />", bg.R, bg.G, bg.B))
-	group := "<g fill-opacity=\"%f\">"
+	group := "<g clip-path=\"url(#clip)\"><g fill-opacity=\"%f\">"
 	lines = append(lines, fmt.Sprintf(group, float64(fillA)/255))
 	for i, shape := range model.Shapes {
 		var attrs []string
@@ -105,7 +106,7 @@ func (model *Model) SVG() string {
 		}
 		lines = append(lines, shape.SVG(strings.Join(attrs, " ")))
 	}
-	lines = append(lines, "</g>")
+	lines = append(lines, "</g></g>")
 	lines = append(lines, "</svg>")
 	return strings.Join(lines, "\n")
 }
